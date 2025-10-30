@@ -10,8 +10,11 @@
       <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
     </nav>
 
-    <button class="menu-btn" aria-label="Toggle navigation">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="actions">
+      <button class="login-btn" (click)="onLogin()">Login</button>
+      <button class="menu-btn" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </header>

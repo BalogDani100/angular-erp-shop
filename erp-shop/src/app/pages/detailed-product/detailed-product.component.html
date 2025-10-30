@@ -1,0 +1,29 @@
+<a routerLink="/products" class="back-link">← Back to products</a>
+
+<section *ngIf="loading()" class="state">Loading…</section>
+<section *ngIf="error() as err" class="state error">{{ err }}</section>
+
+<article *ngIf="!loading() && !error() && product() as p" class="detail">
+    <div class="image">
+        <img [src]="imageSrc()" [alt]="p.name" />
+    </div>
+
+    <div class="info">
+        <h1 class="title">{{ p.name }}</h1>
+        <div class="price">{{ formatPrice(p) }}</div>
+
+        <p class="desc">{{ p.description }}</p>
+
+        <div class="meta">
+            <span class="badge" [class.ok]="p.available === true">
+                {{ p.available === true ? 'In stock' : 'Out of stock' }}
+            </span>
+            <span class="category" *ngIf="p.category">Category: {{ p.category }}</span>
+        </div>
+
+        <div class="actions">
+            <button class="btn" (click)="addToCart()">Add to cart</button>
+            <a class="btn ghost" routerLink="/products">Continue shopping</a>
+        </div>
+    </div>
+</article>

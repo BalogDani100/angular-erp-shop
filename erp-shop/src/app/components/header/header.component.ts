@@ -8,4 +8,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  onLogin(): void {
+    console.log('Login clicked');
+    // TODO: implement real login modal or route
+  }
+}

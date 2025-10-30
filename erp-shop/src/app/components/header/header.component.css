@@ -65,6 +65,33 @@
   border-radius: 1px;
 }
 
+/* Login button */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-btn {
+  padding: 8px 16px;
+  border: 1px solid #007bff;
+  background: #007bff;
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.login-btn:hover {
+  background: #005dc1;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+/* Mobil menü gomb */
 .menu-btn {
   display: none;
   flex-direction: column;
