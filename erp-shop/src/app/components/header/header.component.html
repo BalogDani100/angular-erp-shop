@@ -1,0 +1,17 @@
+<header class="header">
+  <div class="container">
+    <div class="logo">
+      <a routerLink="/">ERP<span>Shop</span></a>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/products" routerLinkActive="active">Products</a>
+      <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
+    </nav>
+
+    <button class="menu-btn" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
