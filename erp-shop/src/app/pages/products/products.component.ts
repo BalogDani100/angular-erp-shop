@@ -88,6 +88,7 @@ export class ProductsComponent implements OnInit {
 
     this.page.set(next);
     this.load();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   changePageSize(size: number): void {

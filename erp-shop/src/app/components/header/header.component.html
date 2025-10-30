@@ -1,20 +1,22 @@
 <header class="header">
-  <div class="container">
-    <div class="logo">
-      <a routerLink="/">ERP<span>Shop</span></a>
-    </div>
+    <div class="container">
+        <div class="logo">
+            <a routerLink="/">
+                <span class="brand">ERP</span><span class="accent">Shop</span>
+            </a>
+        </div>
 
-    <nav class="nav">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a routerLink="/products" routerLinkActive="active">Products</a>
-      <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
-    </nav>
+        <nav class="nav" [class.open]="menuOpen">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+            <a routerLink="/products" routerLinkActive="active">Products</a>
+            <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
+        </nav>
 
-    <div class="actions">
-      <button class="login-btn" (click)="onLogin()">Login</button>
-      <button class="menu-btn" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </button>
+        <div class="actions">
+            <button class="login-btn" (click)="onLogin()">Login</button>
+            <button class="menu-btn" (click)="toggleMenu()" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
     </div>
-  </div>
 </header>

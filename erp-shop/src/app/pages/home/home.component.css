@@ -1,3 +1,137 @@
-.container { padding: 1.25rem; }
-.links { display: flex; gap: .75rem; margin-top: .75rem; }
-.links a { text-decoration: underline; }
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Hero szekció */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #007bff, #00b7ff);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  overflow: hidden;
+}
+
+/* Finom overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.08),
+    rgba(0, 0, 0, 0.3)
+  );
+  z-index: 1;
+}
+
+/* Tartalom */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 2rem;
+  animation: fadeInUp 1s ease both;
+}
+
+/* Fő cím */
+.title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+}
+.title span {
+  background: linear-gradient(90deg, #fff, #e0f2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+/* Alcím */
+.subtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  animation: fadeIn 1.5s ease both;
+}
+
+/* Gombok */
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+}
+.btn.primary {
+  background: white;
+  color: #007bff;
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.25);
+}
+.btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.4);
+}
+.btn.secondary {
+  border: 2px solid white;
+  color: white;
+  background: transparent;
+}
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ✨ Animációk */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
