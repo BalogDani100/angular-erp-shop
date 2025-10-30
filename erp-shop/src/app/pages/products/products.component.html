@@ -3,8 +3,13 @@
     <h1>Products</h1>
 
     <div class="filters">
-      <input type="text" placeholder="Search products…" [ngModel]="search()" (ngModelChange)="onSearchChange($event)"
-        (keyup.enter)="onSearchEnter()" />
+      <input
+        type="text"
+        placeholder="Search products…"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+        (keyup.enter)="onSearchEnter()"
+      />
 
       <select [ngModel]="pageSize()" (ngModelChange)="changePageSize($event)">
         <option [ngValue]="6">6 / page</option>
@@ -18,27 +23,28 @@
   <div *ngIf="loading()" class="loading">Loading…</div>
 
   <div class="grid" *ngIf="!loading() && !error()">
-    <article class="card" *ngFor="let p of pagedItems(); trackBy: trackById" [routerLink]="['/products', p.id]">
-      <div class="thumb">
-        <img *ngIf="p.imageUrl" [src]="p.imageUrl" alt="" />
+  <article class="card" *ngFor="let p of pagedItems(); trackBy: trackById" [routerLink]="['/products', p.id]">
+    <div class="thumb">
+      <img *ngIf="p.imageUrl" [src]="p.imageUrl" alt="" />
+    </div>
+    <div class="body">
+      <div class="title" [title]="p.name">{{ p.name }}</div>
+      <p class="desc" [title]="p.description">{{ p.description }}</p>
+      <div class="meta">
+        <span class="price">
+          {{ p.price | currency: 'USD':'symbol':'1.0-0' }}
+        </span>
+        <span class="badge" [class.ok]="p.available === true || p.available === 'true'">
+          {{ (p.available === true || p.available === 'true') ? 'In stock' : 'Out of stock' }}
+        </span>
       </div>
-      <div class="body">
-        <div class="title" [title]="p.name">{{ p.name }}</div>
-        <p class="desc" [title]="p.description">{{ p.description }}</p>
-        <div class="meta">
-          <span class="price">
-            {{ p.price | currency: 'USD':'symbol':'1.0-0' }}
-          </span>
-          <span class="badge" [class.ok]="p.available === true || p.available === 'true'">
-            {{ (p.available === true || p.available === 'true') ? 'In stock' : 'Out of stock' }}
-          </span>
-        </div>
-      </div>
-    </article>
-  </div>
+    </div>
+  </article>
+</div>
 
-  <footer class="pager" *ngIf="filteredItems().length > 0">
-    <button (click)="changePage(-1)" [disabled]="page() === 1">Prev</button>
-    <span>Page {{ page() }} / {{ totalPages() }}</span>
-    <button (click)="changePage(1)" [disabled]="page() === totalPages()">Next</button>
-  </footer>
+<footer class="pager" *ngIf="filteredItems().length > 0">
+  <button (click)="changePage(-1)" [disabled]="page() === 1">Prev</button>
+  <span>Page {{ page() }} / {{ totalPages() }}</span>
+  <button (click)="changePage(1)" [disabled]="page() === totalPages()">Next</button>
+</footer>
+

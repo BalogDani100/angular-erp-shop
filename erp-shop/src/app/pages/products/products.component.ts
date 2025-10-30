@@ -9,6 +9,9 @@ import {
   selectError,
   selectLoading,
   selectTotalProducts,
+  selectPage,
+  selectPageSize,
+  selectSearch,
 } from './products.selectors';
 import { Product } from './interfaces/product.model';
 
@@ -31,30 +34,23 @@ export class ProductsComponent implements OnInit {
   pageSize = signal(12);
   search = signal('');
 
-  filteredItems = computed(() => {
-    const term = this.search().trim().toLowerCase();
-    const list = this.items();
-    if (!term) return list;
-    return list.filter(
-      (p) =>
-        p.name.toLowerCase().includes(term) ||
-        p.description.toLowerCase().includes(term) ||
-        (p.category?.toLowerCase().includes(term) ?? false)
-    );
-  });
-
   totalPages = computed(() =>
     Math.max(1, Math.ceil(this.filteredItems().length / this.pageSize()))
   );
 
-  pagedItems = computed(() => {
-    const start = (this.page() - 1) * this.pageSize();
-    const end = start + this.pageSize();
-    return this.filteredItems().slice(start, end);
-  });
-
   ngOnInit(): void {
-    this.load();
+    const pageFromStore = this.store.selectSignal(selectPage)();
+    const pageSizeFromStore = this.store.selectSignal(selectPageSize)();
+    const searchFromStore = this.store.selectSignal(selectSearch)();
+
+    this.page.set(pageFromStore);
+    this.pageSize.set(pageSizeFromStore);
+    this.search.set(searchFromStore);
+
+    const hasProducts = this.items().length > 0;
+    if (!hasProducts) {
+      this.load();
+    }
   }
 
   load(): void {
@@ -74,18 +70,30 @@ export class ProductsComponent implements OnInit {
 
   onSearchChange(value: string): void {
     this.search.set(value);
-    this.page.set(1);
   }
+
+  filteredItems = computed(() =>
+    this.items().filter((p) => p.name.toLowerCase().includes(this.search().toLowerCase()))
+  );
+
+  pagedItems = computed(() => {
+    const start = (this.page() - 1) * this.pageSize();
+    const end = start + this.pageSize();
+    return this.filteredItems().slice(start, end);
+  });
 
   changePage(delta: number): void {
     const next = this.page() + delta;
     if (next < 1 || next > this.totalPages()) return;
+
     this.page.set(next);
+    this.load();
   }
 
   changePageSize(size: number): void {
     this.pageSize.set(size);
     this.page.set(1);
+    this.load();
   }
 
   trackById(_: number, p: Product): string {
