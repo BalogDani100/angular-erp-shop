@@ -1,0 +1,3 @@
+.container { padding: 1.25rem; }
+.links { display: flex; gap: .75rem; margin-top: .75rem; }
+.links a { text-decoration: underline; }
