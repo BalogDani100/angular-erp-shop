@@ -1,22 +1,24 @@
-<header class="header">
-    <div class="container">
-        <div class="logo">
-            <a routerLink="/">
-                <span class="brand">ERP</span><span class="accent">Shop</span>
-            </a>
-        </div>
-
-        <nav class="nav" [class.open]="menuOpen">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-            <a routerLink="/products" routerLinkActive="active">Products</a>
-            <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
-        </nav>
-
-        <div class="actions">
-            <button class="login-btn" (click)="onLogin()">Login</button>
-            <button class="menu-btn" (click)="toggleMenu()" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
+<header class="header" [class.scrolled]="scrolled">
+  <div class="container">
+    <div class="logo">
+      <a routerLink="/">ERP<span>Shop</span></a>
     </div>
+
+    <nav class="nav" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/products" routerLinkActive="active">Products</a>
+      <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
+    </nav>
+
+    <div class="actions">
+      <ng-container *ngIf="isLoggedIn(); else loggedOut">
+        <span class="user-name">👋 {{ user()?.name }}</span>
+        <button class="logout-btn" (click)="onLogout()">Logout</button>
+      </ng-container>
+
+      <ng-template #loggedOut>
+        <button class="login-btn" (click)="onLogin()">Login</button>
+      </ng-template>
+    </div>
+  </div>
 </header>

@@ -70,6 +70,7 @@ export class ProductsComponent implements OnInit {
 
   onSearchChange(value: string): void {
     this.search.set(value);
+     this.page.set(1);
   }
 
   filteredItems = computed(() =>
