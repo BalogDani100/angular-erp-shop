@@ -34,6 +34,11 @@ export class ProductsComponent implements OnInit {
   pageSize = signal(12);
   search = signal('');
 
+  priceMin = signal<number | null>(null);
+  priceMax = signal<number | null>(null);
+  availability = signal<'all' | 'in' | 'out'>('all');
+  category = signal('all');
+
   totalPages = computed(() =>
     Math.max(1, Math.ceil(this.filteredItems().length / this.pageSize()))
   );
@@ -70,12 +75,37 @@ export class ProductsComponent implements OnInit {
 
   onSearchChange(value: string): void {
     this.search.set(value);
-     this.page.set(1);
+    this.page.set(1);
   }
 
-  filteredItems = computed(() =>
-    this.items().filter((p) => p.name.toLowerCase().includes(this.search().toLowerCase()))
-  );
+  onFilterChange(): void {
+    this.page.set(1);
+  }
+
+  filteredItems = computed(() => {
+    return this.items()
+      .filter((p) =>
+        p.name.toLowerCase().includes(this.search().toLowerCase())
+      )
+      .filter((p) => {
+        const min = this.priceMin();
+        const max = this.priceMax();
+        const price = typeof p.price === 'number' ? p.price : parseFloat(p.price);
+
+        if (min !== null && price < min) return false;
+        if (max !== null && price > max) return false;
+        return true;
+      })
+      .filter((p) => {
+        if (this.availability() === 'in') return p.available === true;
+        if (this.availability() === 'out') return p.available === false;
+        return true;
+      })
+      .filter((p) => {
+        if (this.category() === 'all') return true;
+        return p.category === this.category();
+      });
+  });
 
   pagedItems = computed(() => {
     const start = (this.page() - 1) * this.pageSize();
