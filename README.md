@@ -50,3 +50,10 @@ npm start
 ## ℹ️ Megjegyzések
 - A mock API URL nem titok; a frontend buildbe beég.
 - Infinite scroll: `IntersectionObserver` tölti a következő oldalt, amikor a lista aljára érsz.
+
+---
+
+## 🧠 AI közreműködés
+- A README a szerző által **AI segítségével** készült és került szerkesztésre.
+- A megírt unit tesztek (services & effects) **AI támogatással** készültek, emberi felülvizsgálattal.
+- A CSS/stílusok **jelentős része AI-generált**, a projekt igényeihez igazítva kézi finomhangolással.
