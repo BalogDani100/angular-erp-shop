@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ProductsActions } from './products.actions';
+import { ProductsActions } from './store/products.actions';
 import {
   selectAllProducts,
   selectError,
@@ -12,7 +12,7 @@ import {
   selectPage,
   selectPageSize,
   selectSearch,
-} from './products.selectors';
+} from './store/products.selectors';
 import { Product } from './interfaces/product.model';
 import { CATEGORY_OPTIONS } from '../../shared/constants/categories';
 

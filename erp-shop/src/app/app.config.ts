@@ -5,10 +5,10 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { appRoutes } from './app.routes';
-import { productsReducer } from './pages/products/products.reducer';
-import { ordersReducer } from './pages/order/order.reducer';
-import { ProductsEffects } from './pages/products/products.effects';
-import { OrdersEffects } from './pages/order/order.effects';
+import { productsReducer } from './pages/products/store/products.reducer';
+import { ordersReducer } from './pages/order/store/order.reducer';
+import { ProductsEffects } from './pages/products/store/products.effects';
+import { OrdersEffects } from './pages/order/store/order.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [

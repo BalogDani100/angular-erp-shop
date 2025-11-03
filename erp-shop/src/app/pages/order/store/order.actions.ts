@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { CreateOrderRequest } from './interfaces/order-request';
-import { CreateOrderResponse } from './interfaces/order-response';
+import { CreateOrderRequest } from '../interfaces/order-request';
+import { CreateOrderResponse } from '../interfaces/order-response';
 
 export const OrderActions = createActionGroup({
   source: 'Orders',

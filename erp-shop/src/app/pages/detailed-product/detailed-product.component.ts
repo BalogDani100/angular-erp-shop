@@ -4,8 +4,8 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of, switchMap, catchError } from 'rxjs';
 import { Product } from '../products/interfaces/product.model';
-import { selectProductById } from '../products/products.selectors';
-import { ProductsActions } from '../products/products.actions';
+import { selectProductById } from '../products/store/products.selectors';
+import { ProductsActions } from '../products/store/products.actions';
 import { LoginService } from '../login/services/login.service';
 
 @Component({

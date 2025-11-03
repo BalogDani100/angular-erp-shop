@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { OrderActions } from './order.actions';
-import { CreateOrderResponse } from './interfaces/order-response';
+import { CreateOrderResponse } from '../interfaces/order-response';
 
 export interface OrderState {
   loading: boolean;

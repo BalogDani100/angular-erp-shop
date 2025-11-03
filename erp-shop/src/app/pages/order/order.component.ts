@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { OrderActions } from '../../pages/order/order.actions';
+import { OrderActions } from './store/order.actions';
 import {
   selectOrderError,
   selectOrderLoading,
   selectOrderResponse,
-} from '../../pages/order/order.selector';
+} from '../../pages/order/./store/order.selector';
 import { LoginService } from '../login/services/login.service';
 import { CreateOrderRequest } from './interfaces/order-request';
 import { filter, take } from 'rxjs';

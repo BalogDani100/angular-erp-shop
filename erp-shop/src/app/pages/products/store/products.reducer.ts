@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { ProductsActions } from './products.actions';
-import { PagedProductsResponse } from '../../pages/products/interfaces/paged-products-response.model';
-import { Product } from '../../pages/products/interfaces/product.model';
+import { PagedProductsResponse } from '../interfaces/paged-products-response.model';
+import { Product } from '../interfaces/product.model';
 
 export interface ProductsState {
   loading: boolean;

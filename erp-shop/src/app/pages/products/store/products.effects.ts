@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { ProductService } from '../../pages/products/services/product.service';
+import { ProductService } from '../services/product.service';
 import { ProductsActions } from './products.actions';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { selectProductsState } from './products.selectors';
