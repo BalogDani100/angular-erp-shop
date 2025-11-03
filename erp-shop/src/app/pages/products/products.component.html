@@ -1,40 +1,44 @@
 <section class="products">
   <header class="toolbar">
-    <h1>Products</h1>
+    <div class="toolbar-grid">
+      <h1 class="title">Products</h1>
 
-    <div class="filters">
-      <input
-        type="text"
-        placeholder="Search products…"
-        [ngModel]="search()"
-        (ngModelChange)="onSearchChange($event)"
-        (keyup.enter)="onSearchEnter()" />
-    </div>
+      <div class="search">
+        <input class="search-input" type="search" placeholder="Search products…" [ngModel]="search()"
+          (ngModelChange)="onSearchChange($event)" (keyup.enter)="onSearchEnter()" />
+      </div>
 
-    <div class="advanced-filters">
-      <input
-        type="number"
-        placeholder="Min price"
-        [ngModel]="priceMin()"
-        (ngModelChange)="priceMin.set($event); onFilterChange()" />
+      <div class="filters-row">
+        <div class="filter">
+          <label>Min price</label>
+          <input type="number" placeholder="Min" [ngModel]="priceMin()"
+            (ngModelChange)="priceMin.set($event); onFilterChange()" />
+        </div>
 
-      <input
-        type="number"
-        placeholder="Max price"
-        [ngModel]="priceMax()"
-        (ngModelChange)="priceMax.set($event); onFilterChange()" />
+        <div class="filter">
+          <label>Max price</label>
+          <input type="number" placeholder="Max" [ngModel]="priceMax()"
+            (ngModelChange)="priceMax.set($event); onFilterChange()" />
+        </div>
 
-      <select [ngModel]="availability()" (ngModelChange)="availability.set($event); onFilterChange()">
-        <option value="all">All</option>
-        <option value="in">In stock</option>
-        <option value="out">Out of stock</option>
-      </select>
+        <div class="filter">
+          <label>Availability</label>
+          <select [ngModel]="availability()" (ngModelChange)="availability.set($event); onFilterChange()">
+            <option value="all">All</option>
+            <option value="in">In stock</option>
+            <option value="out">Out of stock</option>
+          </select>
+        </div>
 
-      <select [ngModel]="category()" (ngModelChange)="category.set($event); onFilterChange()">
-        <option *ngFor="let c of categoryOptions" [value]="c.value">
-          {{ c.label }}
-        </option>
-      </select>
+        <div class="filter">
+          <label>Category</label>
+          <select [ngModel]="category()" (ngModelChange)="category.set($event); onFilterChange()">
+            <option *ngFor="let c of categoryOptions" [value]="c.value">
+              {{ c.label }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -42,10 +46,7 @@
   <div *ngIf="error() as err" class="error">{{ err }}</div>
 
   <div class="grid" *ngIf="!error()">
-    <article
-      class="card"
-      *ngFor="let p of filteredItems(); trackBy: trackById"
-      [routerLink]="['/products', p.id]">
+    <article class="card" *ngFor="let p of filteredItems(); trackBy: trackById" [routerLink]="['/products', p.id]">
       <div class="thumb">
         <img *ngIf="p.imageUrl" [src]="p.imageUrl" [alt]="p.name" />
       </div>
@@ -65,11 +66,8 @@
   <div #infiniteAnchor></div>
 
   <div *ngIf="showBottomLoading()" class="loading bottom-loading">Loading more…</div>
-  <button
-    *ngIf="showBackToTop()"
-    class="back-to-top"
-    (click)="scrollToTop()"
-    aria-label="Back to top"
+
+  <button *ngIf="showBackToTop()" class="back-to-top" (click)="scrollToTop()" aria-label="Back to top"
     title="Back to top">
     ↑
   </button>
