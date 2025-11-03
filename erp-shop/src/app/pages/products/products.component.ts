@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, AfterViewInit, computed, inject, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { RouterLink } from '@angular/router';
@@ -23,14 +23,16 @@ import { CATEGORY_OPTIONS } from '../../shared/constants/categories';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, AfterViewInit {
   private store = inject(Store);
 
   loading = this.store.selectSignal(selectLoading);
   error = this.store.selectSignal(selectError);
   items = this.store.selectSignal(selectAllProducts);
   total = this.store.selectSignal(selectTotalProducts);
+
   categoryOptions = CATEGORY_OPTIONS;
+
   page = signal(1);
   pageSize = signal(12);
   search = signal('');
@@ -40,9 +42,15 @@ export class ProductsComponent implements OnInit {
   availability = signal<'all' | 'in' | 'out'>('all');
   category = signal('all');
 
-  totalPages = computed(() =>
-    Math.max(1, Math.ceil(this.filteredItems().length / this.pageSize()))
-  );
+  totalPages = computed(() => Math.max(1, Math.ceil(this.total() / this.pageSize())));
+
+  showTopLoading = computed(() => this.loading() && this.page() === 1);
+  showBottomLoading = computed(() => this.loading() && this.page() > 1);
+
+  showBackToTop = signal(false);
+
+  @ViewChild('infiniteAnchor', { static: false }) infiniteAnchor!: ElementRef<HTMLDivElement>;
+  private io?: IntersectionObserver;
 
   ngOnInit(): void {
     const pageFromStore = this.store.selectSignal(selectPage)();
@@ -53,13 +61,30 @@ export class ProductsComponent implements OnInit {
     this.pageSize.set(pageSizeFromStore);
     this.search.set(searchFromStore);
 
-    const hasProducts = this.items().length > 0;
-    if (!hasProducts) {
-      this.load();
-    }
+    if (this.items().length === 0) this.load();
   }
 
-  load(): void {
+  ngAfterViewInit(): void {
+    this.io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          this.loadNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0,
+      }
+    );
+    queueMicrotask(() => {
+      if (this.infiniteAnchor?.nativeElement) {
+        this.io!.observe(this.infiniteAnchor.nativeElement);
+      }
+    });
+  }
+
+  private load(): void {
     this.store.dispatch(
       ProductsActions.loadProducts({
         page: this.page(),
@@ -69,8 +94,16 @@ export class ProductsComponent implements OnInit {
     );
   }
 
+  private loadNextPage(): void {
+    if (this.loading()) return;
+    if (this.page() >= this.totalPages()) return;
+    this.page.set(this.page() + 1);
+    this.load();
+  }
+
   onSearchEnter(): void {
     this.page.set(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.load();
   }
 
@@ -80,7 +113,6 @@ export class ProductsComponent implements OnInit {
   }
 
   onFilterChange(): void {
-    this.page.set(1);
   }
 
   filteredItems = computed(() => {
@@ -90,7 +122,6 @@ export class ProductsComponent implements OnInit {
         const min = this.priceMin();
         const max = this.priceMax();
         const price = typeof p.price === 'number' ? p.price : parseFloat(p.price);
-
         if (min !== null && price < min) return false;
         if (max !== null && price > max) return false;
         return true;
@@ -100,34 +131,19 @@ export class ProductsComponent implements OnInit {
         if (this.availability() === 'out') return p.available === false;
         return true;
       })
-      .filter((p) => {
-        if (this.category() === 'all') return true;
-        return p.category === this.category();
-      });
+      .filter((p) => (this.category() === 'all' ? true : p.category === this.category()));
   });
-
-  pagedItems = computed(() => {
-    const start = (this.page() - 1) * this.pageSize();
-    const end = start + this.pageSize();
-    return this.filteredItems().slice(start, end);
-  });
-
-  changePage(delta: number): void {
-    const next = this.page() + delta;
-    if (next < 1 || next > this.totalPages()) return;
-
-    this.page.set(next);
-    this.load();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  changePageSize(size: number): void {
-    this.pageSize.set(size);
-    this.page.set(1);
-    this.load();
-  }
 
   trackById(_: number, p: Product): string {
     return p.id;
+  }
+
+  @HostListener('window:scroll', [])
+  onScroll() {
+    this.showBackToTop.set(window.scrollY > 400);
+  }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

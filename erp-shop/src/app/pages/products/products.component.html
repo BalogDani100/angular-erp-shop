@@ -3,21 +3,25 @@
     <h1>Products</h1>
 
     <div class="filters">
-      <input type="text" placeholder="Search products…" [ngModel]="search()" (ngModelChange)="onSearchChange($event)"
+      <input
+        type="text"
+        placeholder="Search products…"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
         (keyup.enter)="onSearchEnter()" />
-
-      <select [ngModel]="pageSize()" (ngModelChange)="changePageSize($event)">
-        <option [ngValue]="6">6 / page</option>
-        <option [ngValue]="12">12 / page</option>
-        <option [ngValue]="24">24 / page</option>
-      </select>
     </div>
 
     <div class="advanced-filters">
-      <input type="number" placeholder="Min price" [ngModel]="priceMin()"
+      <input
+        type="number"
+        placeholder="Min price"
+        [ngModel]="priceMin()"
         (ngModelChange)="priceMin.set($event); onFilterChange()" />
 
-      <input type="number" placeholder="Max price" [ngModel]="priceMax()"
+      <input
+        type="number"
+        placeholder="Max price"
+        [ngModel]="priceMax()"
         (ngModelChange)="priceMax.set($event); onFilterChange()" />
 
       <select [ngModel]="availability()" (ngModelChange)="availability.set($event); onFilterChange()">
@@ -34,13 +38,16 @@
     </div>
   </header>
 
+  <div *ngIf="showTopLoading()" class="loading">Loading…</div>
   <div *ngIf="error() as err" class="error">{{ err }}</div>
-  <div *ngIf="loading()" class="loading">Loading…</div>
 
-  <div class="grid" *ngIf="!loading() && !error()">
-    <article class="card" *ngFor="let p of pagedItems(); trackBy: trackById" [routerLink]="['/products', p.id]">
+  <div class="grid" *ngIf="!error()">
+    <article
+      class="card"
+      *ngFor="let p of filteredItems(); trackBy: trackById"
+      [routerLink]="['/products', p.id]">
       <div class="thumb">
-        <img *ngIf="p.imageUrl" [src]="p.imageUrl" alt="" />
+        <img *ngIf="p.imageUrl" [src]="p.imageUrl" [alt]="p.name" />
       </div>
       <div class="body">
         <div class="title" [title]="p.name">{{ p.name }}</div>
@@ -55,9 +62,15 @@
     </article>
   </div>
 
-  <footer class="pager" *ngIf="filteredItems().length > 0">
-    <button (click)="changePage(-1)" [disabled]="page() === 1">Prev</button>
-    <span>Page {{ page() }} / {{ totalPages() }}</span>
-    <button (click)="changePage(1)" [disabled]="page() === totalPages()">Next</button>
-  </footer>
+  <div #infiniteAnchor></div>
+
+  <div *ngIf="showBottomLoading()" class="loading bottom-loading">Loading more…</div>
+  <button
+    *ngIf="showBackToTop()"
+    class="back-to-top"
+    (click)="scrollToTop()"
+    aria-label="Back to top"
+    title="Back to top">
+    ↑
+  </button>
 </section>

@@ -4,7 +4,6 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of, switchMap, catchError } from 'rxjs';
 import { Product } from '../products/interfaces/product.model';
-import { ProductService } from '../products/services/product.service';
 import { selectProductById } from '../products/products.selectors';
 import { ProductsActions } from '../products/products.actions';
 import { LoginService } from '../login/services/login.service';
@@ -19,7 +18,6 @@ import { LoginService } from '../login/services/login.service';
 export class DetailedProductComponent {
   private route = inject(ActivatedRoute);
   private store = inject(Store);
-  private productService = inject(ProductService);
   private router = inject(Router);
   private loginService = inject(LoginService);
 
@@ -55,15 +53,8 @@ export class DetailedProductComponent {
                 this.loading.set(false);
                 return of(product);
               }
-
               this.store.dispatch(ProductsActions.loadProductById({ id }));
-              return this.productService.getProductById(id).pipe(
-                catchError(() => {
-                  this.error.set('Product not found.');
-                  this.loading.set(false);
-                  return of(null);
-                })
-              );
+              return this.store.select(selector).pipe(catchError(() => of(null)));
             })
           );
         }),
@@ -93,7 +84,6 @@ export class DetailedProductComponent {
     if (!p) return;
 
     if (!this.isLoggedIn()) {
-      alert('Please log in before placing an order.');
       this.router.navigate(['/login']);
       return;
     }
@@ -117,11 +107,9 @@ export class DetailedProductComponent {
       });
     }
 
-    // 🔹 Frissített kosár mentése
     localStorage.setItem(cartKey, JSON.stringify(existingCart));
     window.dispatchEvent(new Event('storage'));
 
-    // 🔹 Szép visszajelzés
     this.addedToCart.set(true);
     setTimeout(() => this.addedToCart.set(false), 2500);
   }

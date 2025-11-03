@@ -9,7 +9,7 @@ export const ProductsActions = createActionGroup({
     'Load Products Success': props<{ response: PagedProductsResponse }>(),
     'Load Products Failure': props<{ error: string }>(),
 
-    'Load Products From Cache': emptyProps(),
+    'Load Products From Cache': props<{ response: PagedProductsResponse }>(),
 
     'Load Product By Id': props<{ id: string }>(),
     'Load Product By Id Success': props<{ product: Product }>(),

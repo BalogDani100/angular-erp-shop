@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChildren, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,6 +11,7 @@ import {
 } from '../../pages/order/order.selector';
 import { LoginService } from '../login/services/login.service';
 import { CreateOrderRequest } from './interfaces/order-request';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-order-form',
@@ -24,8 +25,6 @@ export class OrderComponent {
   private router = inject(Router);
   private store = inject(Store);
   private loginService = inject(LoginService);
-
-  @ViewChildren('formField') formFields!: QueryList<ElementRef>;
 
   user = this.loginService.user;
 
@@ -165,28 +164,25 @@ export class OrderComponent {
 
     this.store.dispatch(OrderActions.placeOrder({ request: payload }));
 
-    const unsub = this.store.selectSignal(selectOrderResponse);
-    const err = this.store.selectSignal(selectOrderError);
-
-    setTimeout(() => {
-      const res = unsub();
-      const e = err();
-
-      if (res && res.status !== 'failed') {
+    this.store
+      .select(selectOrderResponse)
+      .pipe(filter((r): r is NonNullable<typeof r> => !!r && r.status !== 'failed'), take(1))
+      .subscribe((res) => {
         this.showToast(`✅ Order #${res.orderId} placed! Status: ${res.status}`);
         this.form.reset();
         this.items.clear();
         this.total.set(0);
-
         const user = this.user();
         if (user) {
           localStorage.removeItem(`cart_${user.id}`);
           window.dispatchEvent(new Event('storage'));
         }
-      } else if (e || !res || res.status === 'failed') {
-        this.showToast('❌ Order failed. Please try again later.');
-      }
-    }, 1000);
+      });
+
+    this.store
+      .select(selectOrderError)
+      .pipe(filter((e): e is string => !!e), take(1))
+      .subscribe(() => this.showToast('❌ Order failed. Please try again later.'));
   }
 
   isInvalid(controlName: string): boolean {

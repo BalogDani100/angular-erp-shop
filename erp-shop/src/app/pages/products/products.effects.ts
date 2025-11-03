@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { ProductService } from '../../pages/products/services/product.service';
 import { ProductsActions } from './products.actions';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
-import { selectAllProducts } from './products.selectors';
+import { selectProductsState } from './products.selectors';
 
 @Injectable()
 export class ProductsEffects {
@@ -15,11 +15,16 @@ export class ProductsEffects {
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.loadProducts),
-      withLatestFrom(this.store.select(selectAllProducts)),
-      switchMap(([{ page, pageSize, search }, existing]) => {
-        if (existing.length > 0) {
-          return of(ProductsActions.loadProductsFromCache());
+      withLatestFrom(this.store.select(selectProductsState)),
+      switchMap(([action, state]) => {
+        const { page, pageSize, search } = action;
+        const cacheKey = `${page}|${pageSize}|${search}`;
+        const cached = state.cache?.[cacheKey];
+
+        if (cached) {
+          return of(ProductsActions.loadProductsFromCache({ response: cached }));
         }
+
         return this.productService.getProducts(page, pageSize, search).pipe(
           map((response) => ProductsActions.loadProductsSuccess({ response })),
           catchError(() =>

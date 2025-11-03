@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginService } from '../../pages/login/services/login.service';
@@ -20,14 +20,10 @@ export class HeaderComponent {
   user = this.loginService.user;
   isLoggedIn = this.loginService.isLoggedIn;
 
-  // 🔹 Kosár darabszám
   cartCount = signal(0);
 
   constructor() {
-    // Betöltéskor frissítjük a kosár állapotát
     this.updateCartCount();
-
-    // Figyeljük a localStorage változását (más tab / új termék hozzáadás)
     window.addEventListener('storage', () => this.updateCartCount());
   }
 
@@ -67,6 +63,7 @@ export class HeaderComponent {
 
     const cartKey = `cart_${user.id}`;
     const cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
-    this.cartCount.set(cart.length);
+    const totalQty = (cart as any[]).reduce((s, it: any) => s + (it.quantity ?? 1), 0);
+    this.cartCount.set(totalQty);
   }
 }
