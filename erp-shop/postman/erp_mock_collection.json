@@ -1,0 +1,581 @@
+{
+  "info": {
+    "_postman_id": "f045b0b1-898b-4e57-88be-6c2ed941cb02",
+    "name": "Mini ERP/Webshop Mock API (robust matching)",
+    "description": "Mock API collection Angular teszteléshez.\n- Minden végpont több válasz-szcenárióval (200/201, 400, 404, 500).\n- A *default* (első) example mindig a sikeres válasz (200/201).\n- Válaszválasztás kényszerítéséhez küldhetsz `x-mock-response-code` vagy `x-mock-response-name` headert.\n- A GET /products kéréshez a lapozási/keresési query paraméterek dokumentálva vannak (page, pageSize, search),\n  de az example *originalRequest* NEM tartalmaz query-t, hogy bármely query-vel is matcheljen.\n- A /products/:id útvonal path variable-ként van mentve (':id'), hogy bármilyen azonosítóra illeszkedjen.\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "GET /status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "status"
+              ]
+            },
+            "description": "Egyszerű health-check végpont. Alapértelmezetten 200-at ad vissza."
+          },
+          "response": [
+            {
+              "name": "200 OK – default",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "status"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"status\": \"ok\",\n  \"timestamp\": \"{{$timestamp}}\"\n}"
+            },
+            {
+              "name": "500 Internal Server Error",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "status"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Internal server error\",\n  \"message\": \"Status check failed\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"testpass\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Mock login. Default 200-at ad vissza tokennel."
+          },
+          "response": [
+            {
+              "name": "200 OK – default",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"username\": \"testuser\", \"password\": \"testpass\"}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"{{$randomUUID}}\",\n  \"name\": \"{{$randomFullName}}\",\n  \"token\": \"{{$randomUUID}}\",\n  \"role\": \"{{$randomJobType}}\",\n  \"issuedAt\": \"{{$isoTimestamp}}\"\n}"
+            },
+            {
+              "name": "400 Bad Request – Invalid credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"username\": \"\", \"password\": \"\"}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Invalid credentials\",\n  \"message\": \"Username or password missing/invalid\"\n}"
+            },
+            {
+              "name": "500 Internal Server Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"username\": \"testuser\", \"password\": \"testpass\"}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Internal server error\",\n  \"message\": \"Login service unavailable\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET /products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Oldalszám (>=1)"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Elemszám / oldal (1..100)"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Keresőkifejezés (opcionális)"
+                }
+              ]
+            },
+            "description": "Terméklista lapozással és kereséssel. Az example 'originalRequest' NEM tartalmaz query-t, hogy bármely query-re illeszkedjen."
+          },
+          "response": [
+            {
+              "name": "200 OK – default",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"total\": 100,\n  \"products\": [\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    },\n    {\n      \"id\": \"{{$randomUUID}}\",\n      \"name\": \"{{$randomProductName}}\",\n      \"price\": \"{{$randomFloat}}\",\n      \"description\": \"{{$randomLoremSentence}}\",\n      \"category\": \"{{$randomDepartment}}\",\n      \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/400/300\",\n      \"available\": \"{{$randomBoolean}}\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "400 Bad Request – invalid paging",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Invalid paging\",\n  \"message\": \"page and pageSize must be positive integers\"\n}"
+            },
+            {
+              "name": "500 Internal Server Error",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Internal server error\",\n  \"message\": \"Failed to fetch products\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /products/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Termék azonosító"
+                }
+              ]
+            },
+            "description": "Termék részletei az azonosító alapján. ':id' path variable wildcard-ként illeszkedik."
+          },
+          "response": [
+            {
+              "name": "200 OK – default",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    ":id"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"{{$randomUUID}}\",\n  \"name\": \"{{$randomProductName}}\",\n  \"price\": \"{{$randomFloat}}\",\n  \"description\": \"{{$randomLoremSentences}}\",\n  \"category\": \"{{$randomDepartment}}\",\n  \"imageUrl\": \"https://picsum.photos/seed/{{$randomInt}}/600/400\",\n  \"available\": \"{{$randomBoolean}}\"\n}"
+            },
+            {
+              "name": "404 Not Found – invalid id",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    ":id"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Not found\",\n  \"message\": \"Product not found\"\n}"
+            },
+            {
+              "name": "500 Internal Server Error",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/products/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "products",
+                    ":id"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Internal server error\",\n  \"message\": \"Failed to fetch product\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "POST /orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{$randomUUID}}\",\n  \"items\": [\n    {\n      \"productId\": \"1\",\n      \"quantity\": 2\n    },\n    {\n      \"productId\": \"2\",\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "description": "Új rendelés leadása. Default 201 Created."
+          },
+          "response": [
+            {
+              "name": "201 Created – default",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/orders",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"orderId\": \"{{$randomUUID}}\",\n  \"status\": \"{{$randomWord}}\",\n  \"total\": \"{{$randomFloat}}\",\n  \"timestamp\": \"{{$isoTimestamp}}\"\n}"
+            },
+            {
+              "name": "400 Bad Request – invalid order",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/orders",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Invalid order\",\n  \"message\": \"Missing items or customerId\"\n}"
+            },
+            {
+              "name": "500 Internal Server Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/orders",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"error\": \"Internal server error\",\n  \"message\": \"Order processing failed\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

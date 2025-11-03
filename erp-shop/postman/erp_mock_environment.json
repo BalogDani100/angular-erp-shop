@@ -1,0 +1,15 @@
+{
+  "id": "394ab96f-43a0-4d79-88fa-183285c07e2c",
+  "name": "Mini ERP Mock Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://your-postman-mock-url.mock.pstmn.io",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-10-29T09:43:42Z",
+  "_postman_exported_using": "Postman/10.x"
+}
