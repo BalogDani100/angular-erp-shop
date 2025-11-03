@@ -27,27 +27,9 @@
       </select>
 
       <select [ngModel]="category()" (ngModelChange)="category.set($event); onFilterChange()">
-        <option value="all">All categories</option>
-        <option value="Toys">Toys</option>
-        <option value="Garden">Garden</option>
-        <option value="Music">Music</option>
-        <option value="Books">Books</option>
-        <option value="Kids">Kids</option>
-        <option value="Shoes">Shoes</option>
-        <option value="Electronics">Electronics</option>
-        <option value="Tools">Tools</option>
-        <option value="Computers">Computers</option>
-        <option value="Automotive">Automotive</option>
-        <option value="Beauty">Beauty</option>
-        <option value="Movies">Movies</option>
-        <option value="Grocery">Grocery</option>
-        <option value="Industrial">Industrial</option>
-        <option value="Outdoors">Outdoors</option>
-        <option value="Home">Home</option>
-        <option value="Health">Health</option>
-        <option value="Sports">Sports</option>
-        <option value="Jewelery">Jewelery</option>
-        <option value="Games">Games</option>
+        <option *ngFor="let c of categoryOptions" [value]="c.value">
+          {{ c.label }}
+        </option>
       </select>
     </div>
   </header>

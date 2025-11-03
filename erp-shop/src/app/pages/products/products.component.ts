@@ -14,6 +14,7 @@ import {
   selectSearch,
 } from './products.selectors';
 import { Product } from './interfaces/product.model';
+import { CATEGORY_OPTIONS } from '../../shared/constants/categories';
 
 @Component({
   selector: 'app-products',
@@ -29,7 +30,7 @@ export class ProductsComponent implements OnInit {
   error = this.store.selectSignal(selectError);
   items = this.store.selectSignal(selectAllProducts);
   total = this.store.selectSignal(selectTotalProducts);
-
+  categoryOptions = CATEGORY_OPTIONS;
   page = signal(1);
   pageSize = signal(12);
   search = signal('');
