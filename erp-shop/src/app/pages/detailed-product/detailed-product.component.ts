@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of, switchMap, catchError } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Product } from '../products/interfaces/product.model';
 import { selectProductById } from '../products/store/products.selectors';
 import { ProductsActions } from '../products/store/products.actions';
@@ -62,7 +63,8 @@ export class DetailedProductComponent {
           this.error.set('Unexpected error occurred.');
           this.loading.set(false);
           return of(null);
-        })
+        }),
+        takeUntilDestroyed()
       )
       .subscribe((p) => {
         if (p) this.product.set(p);

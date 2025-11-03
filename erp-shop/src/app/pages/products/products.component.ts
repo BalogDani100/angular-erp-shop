@@ -1,4 +1,15 @@
-import { Component, OnInit, AfterViewInit, computed, inject, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  computed,
+  inject,
+  signal,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { RouterLink } from '@angular/router';
@@ -23,7 +34,7 @@ import { CATEGORY_OPTIONS } from '../../shared/constants/categories';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
-export class ProductsComponent implements OnInit, AfterViewInit {
+export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   private store = inject(Store);
 
   loading = this.store.selectSignal(selectLoading);
@@ -71,17 +82,17 @@ export class ProductsComponent implements OnInit, AfterViewInit {
           this.loadNextPage();
         }
       },
-      {
-        root: null,
-        rootMargin: '200px',
-        threshold: 0,
-      }
+      { root: null, rootMargin: '200px', threshold: 0 }
     );
     queueMicrotask(() => {
       if (this.infiniteAnchor?.nativeElement) {
         this.io!.observe(this.infiniteAnchor.nativeElement);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.io?.disconnect();
   }
 
   private load(): void {
@@ -112,11 +123,10 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.page.set(1);
   }
 
-  onFilterChange(): void {
-  }
+  onFilterChange(): void {}
 
-  filteredItems = computed(() => {
-    return this.items()
+  filteredItems = computed(() =>
+    this.items()
       .filter((p) => p.name.toLowerCase().includes(this.search().toLowerCase()))
       .filter((p) => {
         const min = this.priceMin();
@@ -131,8 +141,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         if (this.availability() === 'out') return p.available === false;
         return true;
       })
-      .filter((p) => (this.category() === 'all' ? true : p.category === this.category()));
-  });
+      .filter((p) => (this.category() === 'all' ? true : p.category === this.category()))
+  );
 
   trackById(_: number, p: Product): string {
     return p.id;

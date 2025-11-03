@@ -33,7 +33,7 @@ export class OrderComponent {
     name: ['', Validators.required],
     role: [''],
     email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.required, Validators.pattern(/^[0-9\-\+]{9,15}$/)]],
+    phone: ['', [Validators.required, Validators.pattern(/^\+?\d{9,15}$/)]],
     address: ['', Validators.required],
     items: this.fb.array([]),
   });
@@ -70,6 +70,18 @@ export class OrderComponent {
 
   goToProducts() {
     this.router.navigate(['/products']);
+  }
+
+  sanitizePhone(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const raw = input.value;
+    const hasPlus = raw.startsWith('+');
+    const digits = raw.replace(/[^\d]/g, '');
+    const normalized = (hasPlus ? '+' : '') + digits;
+    if (normalized !== raw) {
+      input.value = normalized;
+      this.form.get('phone')?.setValue(normalized, { emitEvent: false });
+    }
   }
 
   loadCart() {
@@ -166,7 +178,10 @@ export class OrderComponent {
 
     this.store
       .select(selectOrderResponse)
-      .pipe(filter((r): r is NonNullable<typeof r> => !!r && r.status !== 'failed'), take(1))
+      .pipe(
+        filter((r): r is NonNullable<typeof r> => !!r && r.status !== 'failed'),
+        take(1)
+      )
       .subscribe((res) => {
         this.showToast(`✅ Order #${res.orderId} placed! Status: ${res.status}`);
         this.form.reset();
@@ -181,7 +196,10 @@ export class OrderComponent {
 
     this.store
       .select(selectOrderError)
-      .pipe(filter((e): e is string => !!e), take(1))
+      .pipe(
+        filter((e): e is string => !!e),
+        take(1)
+      )
       .subscribe(() => this.showToast('❌ Order failed. Please try again later.'));
   }
 

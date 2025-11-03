@@ -13,7 +13,6 @@ import { authInterceptor } from './guards/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(),
     provideRouter(appRoutes),
     provideStore({
       products: productsReducer,

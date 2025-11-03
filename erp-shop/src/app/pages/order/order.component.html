@@ -35,7 +35,11 @@
 
         <div class="field" [class.invalid]="isInvalid('phone')">
           <label for="phone">Phone</label>
-          <input id="phone" type="text" formControlName="phone" placeholder="+36 30 123 4567" />
+          <input id="phone" type="tel" inputmode="tel" formControlName="phone" placeholder="+36 30 123 4567"
+            (input)="sanitizePhone($event)" />
+          <small class="hint" *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
+            Only digits allowed, optional leading “+”, 9–15 characters.
+          </small>
         </div>
 
         <div class="field full" [class.invalid]="isInvalid('address')">

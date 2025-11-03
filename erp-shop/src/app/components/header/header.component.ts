@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginService } from '../../pages/login/services/login.service';
@@ -10,11 +10,10 @@ import { LoginService } from '../../pages/login/services/login.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnDestroy {
   private router = inject(Router);
   private loginService = inject(LoginService);
 
-  menuOpen = false;
   scrolled = false;
 
   user = this.loginService.user;
@@ -22,18 +21,20 @@ export class HeaderComponent {
 
   cartCount = signal(0);
 
+  private onStorage = () => this.updateCartCount();
+
   constructor() {
     this.updateCartCount();
-    window.addEventListener('storage', () => this.updateCartCount());
+    window.addEventListener('storage', this.onStorage);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('storage', this.onStorage);
   }
 
   @HostListener('window:scroll')
   onScroll() {
     this.scrolled = window.scrollY > 10;
-  }
-
-  toggleMenu() {
-    this.menuOpen = !this.menuOpen;
   }
 
   onLogin() {
@@ -60,7 +61,6 @@ export class HeaderComponent {
       this.cartCount.set(0);
       return;
     }
-
     const cartKey = `cart_${user.id}`;
     const cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
     const totalQty = (cart as any[]).reduce((s, it: any) => s + (it.quantity ?? 1), 0);
