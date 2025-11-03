@@ -3,11 +3,12 @@
 Mini webshop: terméklista kereséssel + **infinite scroll**, részletező oldal, rendelés űrlap validációval, mock login. Állapotkezelés: **NgRx** (cache + lapok összefűzése).
 
 ## ✅ Fő funkciók
-- Terméklista kereséssel, **infinite scroll** (server-side paging, NgRx cache)
-- Termék részletező (kép fallback)
-- Rendelés űrlap (Reactive Forms, validáció, összegzés; kosár: `localStorage`)
-- Mock login + guard az `/order` oldalra
-- „Back to top” lebegő gomb
+- **Reszponzív UI** (mobil → desktop), sticky header + „Back to top” gomb
+- **Terméklista:** keresés, kliens oldali szűrők (ár, készlet, kategória), **infinite scroll** (server-side paging), NgRx cache + lapok összefűzése
+- **Termék részletező:** kép fallback, ár-formázás
+- **Rendelés űrlap:** Reactive Forms, szigorú validáció (e-mail, telefonszám), kosár `localStorage`-on, összegzés
+- **Auth:** mock bejelentkezés + guard az `/order` oldalra, **Auth interceptor** (Bearer token)
+- **Tesztelés:** alap unit tesztek (ProductService, OrderService, Products/Orders effects)
 
 ## 🧰 Követelmények
 - Node 18+
