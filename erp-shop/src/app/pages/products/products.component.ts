@@ -84,9 +84,7 @@ export class ProductsComponent implements OnInit {
 
   filteredItems = computed(() => {
     return this.items()
-      .filter((p) =>
-        p.name.toLowerCase().includes(this.search().toLowerCase())
-      )
+      .filter((p) => p.name.toLowerCase().includes(this.search().toLowerCase()))
       .filter((p) => {
         const min = this.priceMin();
         const max = this.priceMax();

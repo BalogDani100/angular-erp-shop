@@ -1,12 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of, switchMap, catchError } from 'rxjs';
 import { Product } from '../products/interfaces/product.model';
 import { ProductService } from '../products/services/product.service';
 import { selectProductById } from '../products/products.selectors';
 import { ProductsActions } from '../products/products.actions';
+import { LoginService } from '../login/services/login.service';
 
 @Component({
   selector: 'app-detailed-product',
@@ -19,10 +20,16 @@ export class DetailedProductComponent {
   private route = inject(ActivatedRoute);
   private store = inject(Store);
   private productService = inject(ProductService);
+  private router = inject(Router);
+  private loginService = inject(LoginService);
 
   loading = signal(true);
   error = signal<string | null>(null);
   product = signal<Product | null>(null);
+  addedToCart = signal(false);
+
+  user = this.loginService.user;
+  isLoggedIn = this.loginService.isLoggedIn;
 
   imageSrc = computed(() =>
     this.product() && this.product()!.imageUrl
@@ -82,7 +89,40 @@ export class DetailedProductComponent {
   }
 
   addToCart(): void {
-    console.log('Add to cart (mock)', this.product());
-    alert('Added to cart (mock)');
+    const p = this.product();
+    if (!p) return;
+
+    if (!this.isLoggedIn()) {
+      alert('Please log in before placing an order.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const user = this.user();
+    if (!user) return;
+
+    const cartKey = `cart_${user.id}`;
+    const existingCart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+
+    const existingIndex = existingCart.findIndex((item: any) => item.productId === p.id);
+
+    if (existingIndex !== -1) {
+      existingCart[existingIndex].quantity = (existingCart[existingIndex].quantity || 1) + 1;
+    } else {
+      existingCart.push({
+        productId: p.id,
+        name: p.name,
+        price: p.price,
+        quantity: 1,
+      });
+    }
+
+    // 🔹 Frissített kosár mentése
+    localStorage.setItem(cartKey, JSON.stringify(existingCart));
+    window.dispatchEvent(new Event('storage'));
+
+    // 🔹 Szép visszajelzés
+    this.addedToCart.set(true);
+    setTimeout(() => this.addedToCart.set(false), 2500);
   }
 }

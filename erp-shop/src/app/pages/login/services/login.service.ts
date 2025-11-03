@@ -2,14 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environments';
-
-export interface LoginResponse {
-  id: string;
-  name: string;
-  token: string;
-  role: string;
-  issuedAt: string;
-}
+import { LoginResponse } from '../interfaces/login-response';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {

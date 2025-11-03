@@ -1,17 +1,21 @@
 <header class="header" [class.scrolled]="scrolled">
   <div class="container">
-    <div class="logo">
-      <a routerLink="/">ERP<span>Shop</span></a>
+    <div class="left">
+      <a routerLink="/" class="logo">ERP<span>Shop</span></a>
     </div>
 
-    <nav class="nav" [class.open]="menuOpen">
+    <nav class="center">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="/products" routerLinkActive="active">Products</a>
-      <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
     </nav>
 
-    <div class="actions">
+    <div class="right actions">
       <ng-container *ngIf="isLoggedIn(); else loggedOut">
+        <button class="cart-btn" (click)="goToCart()" title="View Cart">
+          🛒
+          <span class="badge" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
+        </button>
+
         <span class="user-name">👋 {{ user()?.name }}</span>
         <button class="logout-btn" (click)="onLogout()">Logout</button>
       </ng-container>

@@ -1,0 +1,90 @@
+<div class="toast success" *ngIf="toastMessage()">
+  {{ toastMessage() }}
+</div>
+
+<section class="order-form">
+  <h1 class="title">🛍️ Complete Your Order</h1>
+
+  <div *ngIf="errorLocal()" class="alert error top-alert">
+    {{ errorLocal() }}
+  </div>
+
+  <div *ngIf="!hasItems" class="empty-cart">
+    🛒 Your cart is empty.<br />
+    <button class="add-btn" (click)="goToProducts()">🛍️ Go to products</button>
+  </div>
+
+  <form *ngIf="hasItems" [formGroup]="form" (ngSubmit)="submit()" class="form" novalidate>
+    <div class="section">
+      <h2>Customer Information</h2>
+      <div class="grid">
+        <div class="field" [class.invalid]="isInvalid('name')">
+          <label>Full Name</label>
+          <input type="text" formControlName="name" placeholder="Your name" />
+        </div>
+
+        <div class="field">
+          <label>Role</label>
+          <input type="text" formControlName="role" readonly />
+        </div>
+
+        <div class="field" [class.invalid]="isInvalid('email')">
+          <label>Email</label>
+          <input type="email" formControlName="email" placeholder="you@example.com" />
+        </div>
+
+        <div class="field" [class.invalid]="isInvalid('phone')">
+          <label>Phone</label>
+          <input type="text" formControlName="phone" placeholder="+36 30 123 4567" />
+        </div>
+
+        <div class="field full" [class.invalid]="isInvalid('address')">
+          <label>Address</label>
+          <input type="text" formControlName="address" placeholder="Street, City, ZIP" />
+        </div>
+      </div>
+    </div>
+
+    <div class="section order-items">
+      <h2>🛒 Order Items</h2>
+
+      <div formArrayName="items" class="items-container">
+        <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i" class="item-card">
+          <div class="item-header">
+            <span class="item-index">#{{ i + 1 }}</span>
+            <button type="button" class="remove-btn" (click)="removeItem(i)">✖</button>
+          </div>
+
+          <div class="item-fields">
+            <div class="field">
+              <label>Product Name</label>
+              <input type="text" formControlName="productName" readonly class="readonly" />
+            </div>
+
+            <div class="field">
+              <label>Quantity</label>
+              <input type="number" formControlName="quantity" min="1" />
+            </div>
+
+            <div class="field">
+              <label>Total ($)</label>
+              <input type="number" formControlName="totalPrice" readonly class="readonly" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="add-btn" (click)="goToProducts()">🛍️ Add another product</button>
+    </div>
+
+    <div class="total-summary">
+      <h3>Total: {{ total() | currency: 'USD' }}</h3>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="submit-btn" [disabled]="loading() || !hasItems">
+        {{ loading() ? 'Submitting…' : '📦 Place Order' }}
+      </button>
+    </div>
+  </form>
+</section>

@@ -9,7 +9,7 @@ import { LoginService } from './services/login.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   username = '';
@@ -36,7 +36,7 @@ export class LoginComponent {
       error: () => {
         this.loading = false;
         this.error = 'Invalid username or password.';
-      }
+      },
     });
   }
 }

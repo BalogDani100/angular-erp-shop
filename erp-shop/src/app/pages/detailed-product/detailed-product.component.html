@@ -25,8 +25,17 @@
     </div>
 
     <div class="actions">
-      <button class="btn" (click)="addToCart()">🛒 Add to cart</button>
+      <button class="btn" (click)="addToCart()" [disabled]="!p.available" [class.disabled]="!p.available">
+        🛒 Add to cart
+      </button>
       <a class="btn ghost" routerLink="/products">← Continue shopping</a>
     </div>
+
   </div>
 </article>
+
+<div class="toast success" *ngIf="addedToCart()">
+  ✅ Added to cart successfully!
+</div>
+
+<a routerLink="/products" class="back-link">← Back to products</a>
