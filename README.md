@@ -56,5 +56,4 @@ npm start
 
 ## 🧠 AI közreműködés
 - A README a szerző által **AI segítségével** készült és került szerkesztésre.
-- A megírt unit tesztek (services & effects) **AI támogatással** készültek, emberi felülvizsgálattal.
 - A CSS/stílusok **jelentős része AI-generált**, a projekt igényeihez igazítva kézi finomhangolással.
